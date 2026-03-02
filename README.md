@@ -3,7 +3,8 @@
 
 QQTabBarController和系统UITabBarController使用方法类似，QQTabBar可以高度自定义，能更方便实现自己想要的效果。
 
-<img width="748" height="1616" alt="49669577-e8a3-4da7-8909-251fefc62114" src="https://github.com/user-attachments/assets/01b570df-45dc-4744-9c7c-c59e004d14ce" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 Pro - 2026-03-02 at 11 49 22" src="https://github.com/user-attachments/assets/01b38301-4a3f-4379-a6dd-15db47c82c76" />
+
 
 使用QQTabBarController时：
 
