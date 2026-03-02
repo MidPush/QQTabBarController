@@ -8,16 +8,16 @@ QQTabBarController和系统UITabBarController使用方法类似，QQTabBar可以
 
 使用QQTabBarController时：
 
-UIViewController *vc = [[UIViewController alloc] init];
-vc.tabBarItem = nil;
-vc.hidesBottomBarWhenPushed = YES;
-vc.tabBarController;
+UIViewController *vc = [[UIViewController alloc] init];  <br>
+vc.tabBarItem = nil;  <br>
+vc.hidesBottomBarWhenPushed = YES;  <br>
+vc.tabBarController;  <br>
 
-替换成：
+替换成：  <br>
 
-vc.qq_tabBarItem = nil;
-vc.qq_hidesBottomBarWhenPushed = YES;
-vc.qq_tabBarController;
+vc.qq_tabBarItem = nil;  <br>
+vc.qq_hidesBottomBarWhenPushed = YES;  <br>
+vc.qq_tabBarController;  <br>
 
 
 有什么Bug，需要添加的功能或者建议欢迎提出问题。
