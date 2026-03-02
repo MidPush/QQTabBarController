@@ -2,8 +2,8 @@
 自定义 Custom UITabBarController
 
 QQTabBarController和系统UITabBarController使用方法类似，QQTabBar可以高度自定义，能更方便实现自己想要的效果。
-![ezgif-1425f158295fd9b0](https://github.com/user-attachments/assets/90768d58-8a75-4654-8608-a1bcd3dd5baa)
 
+<img width="748" height="1616" alt="49669577-e8a3-4da7-8909-251fefc62114" src="https://github.com/user-attachments/assets/01b570df-45dc-4744-9c7c-c59e004d14ce" />
 
 使用QQTabBarController时：
 
