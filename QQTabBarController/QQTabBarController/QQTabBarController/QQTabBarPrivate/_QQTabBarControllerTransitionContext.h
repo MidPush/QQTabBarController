@@ -1,6 +1,6 @@
 //
 //  _QQTabBarControllerTransitionContext.h
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/6.
 //

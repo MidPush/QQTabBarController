@@ -1,6 +1,6 @@
 //
 //  UINavigationController+QQPrivate.h
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/10.
 //
@@ -26,6 +26,11 @@ NS_ASSUME_NONNULL_BEGIN
                 percentComplete:(CGFloat)percentComplete;
 
 - (void)qq_navigationController:(UINavigationController *)navigationController
+       didUpdateInteractiveFrom:(UIViewController *)fromVC
+                             to:(UIViewController *)toVC
+           popGestureRecognizer:(UIGestureRecognizer *)popGestureRecognizer;
+
+- (void)qq_navigationController:(UINavigationController *)navigationController
           willEndTransitionFrom:(UIViewController *)fromVC
                              to:(UIViewController *)toVC
                       operation:(UINavigationControllerOperation)operation
@@ -40,6 +45,12 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface UINavigationController (QQPrivate)
+
+/**
+ 当有自定义全屏返回手势时，需要设置该值（比如一些第三方实现的全屏返回手势）
+ 用系统自带pop返回手势，则不用管
+ */
+@property (nonatomic, strong, nullable) UIGestureRecognizer *qq_customPopGestureRecognizer;
 
 @end
 

@@ -1,24 +1,32 @@
 //
 //  QQTabBarController.h
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/6.
 //
 
 #import <UIKit/UIKit.h>
 #import "QQTabBar.h"
-#import "QQTabBarItem.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class QQTabBarController;
+
 @protocol QQTabBarControllerDelegate <NSObject>
 
 @optional
-- (BOOL)tabBarController:(QQTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController;
 
+// select viewController
+- (BOOL)tabBarController:(QQTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController;
 - (void)tabBarController:(QQTabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController;
 
+// tabBar show/hide
+- (void)tabBarController:(QQTabBarController *)tabBarController willShowTabBar:(QQTabBar *)tabBar;
+- (void)tabBarController:(QQTabBarController *)tabBarController didShowTabBar:(QQTabBar *)tabBar;
+- (void)tabBarController:(QQTabBarController *)tabBarController willHideTabBar:(QQTabBar *)tabBar;
+- (void)tabBarController:(QQTabBarController *)tabBarController didHideTabBar:(QQTabBar *)tabBar;
+
+// transition
 - (nullable id <UIViewControllerAnimatedTransitioning>)tabBarController:(QQTabBarController *)tabBarController
                      animationControllerForTransitionFromViewController:(UIViewController *)fromVC
                                                        toViewController:(UIViewController *)toVC;

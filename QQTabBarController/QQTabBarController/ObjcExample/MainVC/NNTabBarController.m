@@ -1,6 +1,6 @@
 //
 //  NNTabBarController.m
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/6.
 //
@@ -69,7 +69,7 @@
 }
 
 #pragma mark - QQTabBarControllerDelegate
-- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
+- (BOOL)tabBarController:(QQTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     NSInteger index = [tabBarController.viewControllers indexOfObject:viewController];
     [self springAnimationForView:self.tabBar.tabBarButtons[index].imageView];
     if (index == 2) {
@@ -90,7 +90,6 @@
 }
 
 #pragma mark - QQTabBarDelegate
-
 - (void)tabBar:(QQTabBar *)tabBar didSelectItem:(nonnull QQTabBarItem *)item {
     NSInteger index = [tabBar.items indexOfObject:item];
     if (index == 2) {
@@ -101,15 +100,14 @@
     BOOL isBlackTheme = (index == 4);
     NSDictionary *titleTextAttributes = isBlackTheme ? @{NSForegroundColorAttributeName:UIColor.whiteColor} : @{NSForegroundColorAttributeName:UIColor.grayColor};
     UIColor *barTintColor = isBlackTheme ? UIColor.blackColor : UIColor.whiteColor;
+    self.tabBar.barTintColor = barTintColor;
     for (UIViewController *viewController in self.viewControllers) {
         [viewController.qq_tabBarItem setTitleTextAttributes:titleTextAttributes forState:UIControlStateNormal];
-        self.tabBar.barTintColor = barTintColor;
     }
 }
  
 #pragma mark - Spring Animation
-
-static NSString *const QQAssetsPickerSpringAnimationKey = @"imagePickerActionSpring";
+static NSString *const QQSpringAnimationKey = @"QQSpringAnimationKey";
 - (void)springAnimationForView:(UIView *)view {
     if (!view || ![view isKindOfClass:[UIView class]]) return;
     [self removeSpringAnimationForView:view];
@@ -118,12 +116,12 @@ static NSString *const QQAssetsPickerSpringAnimationKey = @"imagePickerActionSpr
     springAnimation.values = @[@.85, @1.15, @.9, @1.0,];
     springAnimation.keyTimes = @[@(0.0 / duration), @(0.15 / duration) , @(0.3 / duration), @(0.45 / duration),];
     springAnimation.duration = duration;
-    [view.layer addAnimation:springAnimation forKey:QQAssetsPickerSpringAnimationKey];
+    [view.layer addAnimation:springAnimation forKey:QQSpringAnimationKey];
 }
 
 - (void)removeSpringAnimationForView:(UIView *)view {
     if (!view || ![view isKindOfClass:[UIView class]]) return;
-    [view.layer removeAnimationForKey:QQAssetsPickerSpringAnimationKey];
+    [view.layer removeAnimationForKey:QQSpringAnimationKey];
 }
 
 @end

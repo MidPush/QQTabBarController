@@ -1,6 +1,6 @@
 //
 //  QQTabBar.m
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/6.
 //
@@ -19,7 +19,7 @@
 
 @property (nonatomic, strong) UIView *contentView;
 
-@property (nonatomic, weak, readonly) QQTabBarController *tabBarController;
+@property (nonatomic, weak, readonly, nullable) QQTabBarController *tabBarController;
 
 @end
 
@@ -90,10 +90,17 @@
 }
 
 - (void)setSelectedItem:(QQTabBarItem *)selectedItem {
-    if (!selectedItem) return;
-    NSInteger index = [self.items indexOfObject:selectedItem];
-    if (index != NSNotFound && _selectedItemIndex != index) {
-        [self _setSelectedIndex:index];
+    if (selectedItem) {
+        NSInteger index = [self.items indexOfObject:selectedItem];
+        if (index != NSNotFound && _selectedItemIndex != index) {
+            [self _setSelectedIndex:index];
+        }
+    } else {
+        if (self.selectedItem) {
+            QQTabBarButton *selectedButton = _buttons[_selectedItemIndex];
+            selectedButton.selected = NO;
+            _selectedItemIndex = -1;
+        }
     }
 }
 

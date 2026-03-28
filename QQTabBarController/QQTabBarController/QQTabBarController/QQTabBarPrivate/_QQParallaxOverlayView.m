@@ -1,6 +1,6 @@
 //
 //  _QQParallaxOverlayView.m
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/10.
 //
@@ -36,4 +36,5 @@
     } while (next != nil);
     return nil;
 }
+
 @end

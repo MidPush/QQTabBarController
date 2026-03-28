@@ -1,6 +1,6 @@
 //
 //  QQTabBar.h
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/6.
 //
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class QQTabBar, QQTabBarItem, QQTabBarButton;
+@class QQTabBar;
 
 @protocol QQTabBarDelegate<NSObject>
 @optional
@@ -19,7 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)tabBar:(QQTabBar *)tabBar didSelectItem:(QQTabBarItem *)item;
 
 @end
-
 
 @interface QQTabBar : UIView
 

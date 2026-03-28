@@ -1,6 +1,6 @@
 //
 //  UINavigationController+QQPrivate.m
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/10.
 //
@@ -36,6 +36,7 @@ void _QQSwizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector) {
 static char *qq_nestedInQQTabBarControllerKey;
 static char *qq_interactivePopGestureRecognizerRegisteredKey;
 static char *qq_navControllerExtensionDelegateKey;
+static char *qq_customPopGestureRecognizerKey;
 
 #pragma mark Getters & Setters
 - (id<UINavigationControllerExtensionDelegate>)extensionDelegate {
@@ -60,6 +61,14 @@ static char *qq_navControllerExtensionDelegateKey;
 
 - (void)setInteractivePopGestureRecognizerRegistered:(BOOL)interactivePopGestureRecognizerRegistered {
     objc_setAssociatedObject(self, &qq_interactivePopGestureRecognizerRegisteredKey, @(interactivePopGestureRecognizerRegistered), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (UIGestureRecognizer *)qq_customPopGestureRecognizer {
+    return objc_getAssociatedObject(self, &qq_customPopGestureRecognizerKey);
+}
+
+- (void)setQq_customPopGestureRecognizer:(UIGestureRecognizer *)qq_customPopGestureRecognizer {
+    objc_setAssociatedObject(self, &qq_customPopGestureRecognizerKey, qq_customPopGestureRecognizer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #pragma mark - 主流程
@@ -103,32 +112,25 @@ static char *qq_navControllerExtensionDelegateKey;
         return previousViewController;
     }
     
-    [previousViewController setValue:nil forKey:NSStringFromSelector(@selector(qq_tabBarController))];
     [self _popViewController:previousViewController toViewController:self.topViewController animated:animated];
     return previousViewController;
 }
 
 - (NSArray<__kindof UIViewController *> *)qq_popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    UIViewController *previousViewController = self.topViewController;
     NSArray<__kindof UIViewController *> *viewControllers = [self qq_popToViewController:viewController animated:animated];
     if (!self.nestedInQQTabBarController) {
         return viewControllers;
-    }
-    UIViewController *previousViewController = self.topViewController;
-    for (UIViewController *viewController in viewControllers) {
-        [viewController setValue:nil forKey:NSStringFromSelector(@selector(qq_tabBarController))];
     }
     [self _popViewController:previousViewController toViewController:viewController animated:animated];
     return viewControllers;
 }
 
 - (NSArray<__kindof UIViewController *> *)qq_popToRootViewControllerAnimated:(BOOL)animated {
+    UIViewController *previousViewController = self.topViewController;
     NSArray<__kindof UIViewController *> *viewControllers = [self qq_popToRootViewControllerAnimated:animated];
     if (!self.nestedInQQTabBarController) {
         return viewControllers;
-    }
-    UIViewController *previousViewController = self.topViewController;
-    for (UIViewController *viewController in viewControllers) {
-        [viewController setValue:nil forKey:NSStringFromSelector(@selector(qq_tabBarController))];
     }
     [self _popViewController:previousViewController toViewController:self.topViewController animated:animated];
     return viewControllers;
@@ -142,18 +144,8 @@ static char *qq_navControllerExtensionDelegateKey;
     }
     
     UIViewController *previousViewController = self.topViewController;
-    [viewController setValue:previousViewController.qq_tabBarController forKey:NSStringFromSelector(@selector(qq_tabBarController))];
-    [self qq_pushViewController:viewController animated:animated];
     
-    if (@available(iOS 26.0, *)) {
-        if (self.interactivePopGestureRecognizerRegistered == NO && self.interactiveContentPopGestureRecognizer != nil) {
-            [self _registerPopGestureRecognizer:self.interactiveContentPopGestureRecognizer];
-        }
-    } else {
-        if (self.interactivePopGestureRecognizerRegistered == NO && self.interactivePopGestureRecognizer != nil) {
-            [self _registerPopGestureRecognizer:self.interactivePopGestureRecognizer];
-        }
-    }
+    [self qq_pushViewController:viewController animated:animated];
     
     [self _pushViewController:previousViewController toViewController:viewController animated:animated];
 }
@@ -173,10 +165,6 @@ static char *qq_navControllerExtensionDelegateKey;
         isPush = YES;
     }
     
-    for (UIViewController *viewController in viewControllers) {
-        [viewController setValue:previousViewController.qq_tabBarController forKey:NSStringFromSelector(@selector(qq_tabBarController))];
-    }
-    
     if (isPush) {
         [self _pushViewController:previousViewController toViewController:viewControllers.lastObject animated:animated];
     } else {
@@ -189,17 +177,13 @@ static char *qq_navControllerExtensionDelegateKey;
     [self qq_didMoveToParentViewController:parent];
     
     if (parent == nil && self.nestedInQQTabBarController) {
-        if (@available(iOS 26.0, *)) {
-            [self.interactiveContentPopGestureRecognizer removeTarget:self action:@selector(_popGestureRecognizerHandler:)];
-        } else {
-            [self.interactivePopGestureRecognizer removeTarget:self action:@selector(_popGestureRecognizerHandler:)];
-        }
-        self.nestedInQQTabBarController = NO;
         self.extensionDelegate = nil;
-        self.interactivePopGestureRecognizerRegistered = NO;
+        self.nestedInQQTabBarController = NO;
+        [self _unregisterPopGestureRecognizer];
     } else if ([parent isKindOfClass:[QQTabBarController class]]) {
         self.extensionDelegate = (id<UINavigationControllerExtensionDelegate>)parent;
         self.nestedInQQTabBarController = YES;
+        [self _registerPopGestureRecognizer];
         [self _updateNavigationBarHeight];
     }
 }
@@ -212,14 +196,42 @@ static char *qq_navControllerExtensionDelegateKey;
 }
 
 #pragma mark - Gestures
-- (void)_registerPopGestureRecognizer:(__kindof UIGestureRecognizer *)popGestureRecognizer {
+- (UIGestureRecognizer *)_responsePopGestureRecognizer {
+    UIGestureRecognizer *popGestureRecognizer = self.qq_customPopGestureRecognizer;
+    if (!popGestureRecognizer) {
+        if (@available(iOS 26.0, *)) {
+            popGestureRecognizer = self.interactiveContentPopGestureRecognizer;
+        } else {
+            popGestureRecognizer = self.interactivePopGestureRecognizer;
+        }
+    }
+    return popGestureRecognizer;
+}
+
+- (void)_registerPopGestureRecognizer {
+    if (self.interactivePopGestureRecognizerRegistered) return;
+    UIGestureRecognizer *popGestureRecognizer = [self _responsePopGestureRecognizer];
     if (popGestureRecognizer) {
         [popGestureRecognizer addTarget:self action:@selector(_popGestureRecognizerHandler:)];
         self.interactivePopGestureRecognizerRegistered = YES;
     }
 }
 
+- (void)_unregisterPopGestureRecognizer {
+    if (!self.interactivePopGestureRecognizerRegistered) return;
+    UIGestureRecognizer *popGestureRecognizer = [self _responsePopGestureRecognizer];
+    if (popGestureRecognizer) {
+        [popGestureRecognizer removeTarget:self action:@selector(_popGestureRecognizerHandler:)];
+        self.interactivePopGestureRecognizerRegistered = NO;
+    }
+}
+
 - (void)_popGestureRecognizerHandler:(UIPanGestureRecognizer *)popGestureRecognizer {
+    [self.extensionDelegate qq_navigationController:self
+                           didUpdateInteractiveFrom:[self.transitionCoordinator viewControllerForKey:UITransitionContextFromViewControllerKey]
+                                                 to:self.topViewController
+                               popGestureRecognizer:popGestureRecognizer];
+    
     if (popGestureRecognizer.state == UIGestureRecognizerStateEnded) return;
     CGFloat const translation = [popGestureRecognizer translationInView:self.view].x;
     if (translation == 0.0) return;
@@ -314,9 +326,6 @@ static char *qq_navControllerExtensionDelegateKey;
                                                                to:toVC
                                                         operation:UINavigationControllerOperationPop
                                                         cancelled:context.isCancelled];
-            if (context.isCancelled) {
-                [fromVC setValue:toVC.qq_tabBarController forKey:NSStringFromSelector(@selector(qq_tabBarController))];
-            }
         }];
     } else {
         if (animated) {

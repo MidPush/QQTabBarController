@@ -1,6 +1,6 @@
 //
 //  TableViewController.m
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/6.
 //
@@ -17,11 +17,6 @@
 @end
 
 @implementation TableViewController
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [self.qq_tabBarController setTabBarHidden:NO animated:YES];
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -129,6 +124,7 @@
     } else {
         UIViewController *vc = [[UIViewController alloc] init];
         vc.qq_hidesBottomBarWhenPushed = YES;
+        vc.hidesBottomBarWhenPushed = YES;
         vc.view.backgroundColor = UIColor.systemBackgroundColor;
         [self.navigationController pushViewController:vc animated:YES];
     }

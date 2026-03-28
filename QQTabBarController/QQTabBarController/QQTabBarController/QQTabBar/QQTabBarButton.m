@@ -1,6 +1,6 @@
 //
 //  QQTabBarButton.m
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/6.
 //
@@ -78,6 +78,8 @@
     _imageView.image = image;
     if (self.selected) {
         _imageView.tintColor = self.tintColor;
+    } else {
+        _imageView.tintColor = [UIColor systemGrayColor];
     }
     
     // title
@@ -101,7 +103,6 @@
         if (isQQTabBarItem) {
             _badgeView.badgeContentInset = _tabBarItem.badgeContentInset;
         }
-        
     }
     
     // background

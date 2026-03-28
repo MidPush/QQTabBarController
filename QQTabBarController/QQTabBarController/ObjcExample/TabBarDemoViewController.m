@@ -1,6 +1,6 @@
 //
 //  TabBarDemoViewController.m
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/6.
 //
@@ -79,7 +79,10 @@
     
     CGFloat uitabBarHeight = _tabBar.frame.size.height;
     if (@available(iOS 26.0, *)) {
-        uitabBarHeight = 91;
+        BOOL useOldUI = [[[NSBundle mainBundle].infoDictionary objectForKey:@"UIDesignRequiresCompatibility"] boolValue];
+        if (!useOldUI) {
+            uitabBarHeight = 91;
+        }
     }
     _uitabBar.frame = CGRectMake(0, CGRectGetMaxY(_tabBar.frame) + 10, self.view.frame.size.width, uitabBarHeight);
     _tableView.frame = CGRectMake(0, CGRectGetMaxY(_uitabBar.frame), self.view.frame.size.width, self.view.frame.size.height - (CGRectGetMaxY(_uitabBar.frame)+ 10));

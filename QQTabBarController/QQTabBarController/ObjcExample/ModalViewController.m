@@ -1,11 +1,12 @@
 //
 //  ModalViewController.m
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/12.
 //
 
 #import "ModalViewController.h"
+#import "QQTabBarController.h"
 
 @interface ModalViewController ()
 @property (nonatomic, strong) UIButton *button;

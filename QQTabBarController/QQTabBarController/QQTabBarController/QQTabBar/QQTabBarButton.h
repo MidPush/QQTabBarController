@@ -1,15 +1,14 @@
 //
 //  QQTabBarButton.h
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/2/6.
 //
 
 #import <UIKit/UIKit.h>
+#import "QQTabBarItem.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-@class QQTabBarItem;
 
 @interface QQTabBarButton : UIControl
 

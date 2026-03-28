@@ -1,6 +1,6 @@
 //
 //  UIImage+Extension.h
-//  QQNavTabBarController
+//  QQTabBarController
 //
 //  Created by apple on 2026/3/2.
 //
