@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |spec|
 
-  spec.name         = "QQTabBarController"
+  spec.name         = "QQTabBarKit"
   spec.version      = "1.0.0"
   spec.summary      = "QQTabBarController."
   spec.homepage     = "https://github.com/MidPush/QQTabBarController"
