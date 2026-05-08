@@ -9,6 +9,6 @@ Pod::Spec.new do |spec|
   spec.author       = { "xz" => "497569855@qq.com" }
   spec.platform     = :ios, "13.0"
   spec.source       = { :git => "https://github.com/MidPush/QQTabBarController.git", :tag => spec.version }
-  spec.source_files  = "QQTabBarController/QQTabBarController.h"
+  spec.source_files  = "QQTabBarController/**/*.{h,m}"
 
 end
