@@ -21,16 +21,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UITabBarController *a = [[UITabBarController alloc] init];
-    BOOL b = a.isViewLoaded;
-    UITabBar *t = [a valueForKey:@"tabBar"];
-    NSLog(@"");
-    
     // 可以通过KVC自定义QQTabBar
     NNTabBar *tabBar = [[NNTabBar alloc] init];
     [self setValue:tabBar forKey:@"qq_tabBar"];
     
-    self.delegate = self;
     self.qq_tabBar.barTintColor = [UIColor whiteColor];
     self.qq_tabBar.shadowImage = [UIImage qq_imageWithColor:[UIColor.lightGrayColor colorWithAlphaComponent:0.5] size:CGSizeMake(1, 1)];
     
