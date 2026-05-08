@@ -17,7 +17,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor systemBackgroundColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     
     _button = [[UIButton alloc] init];
     [_button setTitle:@"关闭" forState:UIControlStateNormal];

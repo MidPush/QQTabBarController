@@ -7,6 +7,7 @@
 
 #import "UINavigationController+QQPrivate.h"
 #import "QQTabBarController.h"
+#import "YYTabBarController.h"
 #import <objc/runtime.h>
 
 void _QQSwizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector) {
@@ -132,6 +133,9 @@ static char *qq_customPopGestureRecognizerKey;
     if (!self.nestedInQQTabBarController) {
         return viewControllers;
     }
+    if (viewControllers == nil || viewControllers.count == 0) {
+        return viewControllers;
+    }
     [self _popViewController:previousViewController toViewController:self.topViewController animated:animated];
     return viewControllers;
 }
@@ -165,12 +169,13 @@ static char *qq_customPopGestureRecognizerKey;
         isPush = YES;
     }
     
-    if (isPush) {
-        [self _pushViewController:previousViewController toViewController:viewControllers.lastObject animated:animated];
-    } else {
-        [self _popViewController:previousViewController toViewController:viewControllers.lastObject animated:animated];
-    }
     [self qq_setViewControllers:viewControllers animated:animated];
+    
+    if (isPush) {
+        [self _pushViewController:previousViewController toViewController:toViewController animated:animated];
+    } else {
+        [self _popViewController:previousViewController toViewController:toViewController animated:animated];
+    }
 }
 
 - (void)qq_didMoveToParentViewController:(nullable UIViewController *)parent {
@@ -180,7 +185,7 @@ static char *qq_customPopGestureRecognizerKey;
         self.extensionDelegate = nil;
         self.nestedInQQTabBarController = NO;
         [self _unregisterPopGestureRecognizer];
-    } else if ([parent isKindOfClass:[QQTabBarController class]]) {
+    } else if ([parent isKindOfClass:[QQTabBarController class]] || [parent isKindOfClass:[YYTabBarController class]]) {
         self.extensionDelegate = (id<UINavigationControllerExtensionDelegate>)parent;
         self.nestedInQQTabBarController = YES;
         [self _registerPopGestureRecognizer];
@@ -302,6 +307,16 @@ static char *qq_customPopGestureRecognizerKey;
 
 - (void)_popViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC animated:(BOOL)animated {
     id<UIViewControllerTransitionCoordinator> transitionCoordinator = self.transitionCoordinator;
+    
+    if (fromVC && fromVC == toVC) {
+        NSLog(@"UINavigationController+QQPrivate：是否连续 pop 操作？这可能会出问题!");
+        // 解决连续 pop 操作，toVC不准确的问题
+        NSInteger index = [self.viewControllers indexOfObject:toVC];
+        NSInteger toIndex = index - 1;
+        if (toIndex >= 0) {
+            toVC = self.viewControllers[toIndex];
+        }
+    }
     
     [self.extensionDelegate qq_navigationController:self
                              didBeginTransitionFrom:fromVC

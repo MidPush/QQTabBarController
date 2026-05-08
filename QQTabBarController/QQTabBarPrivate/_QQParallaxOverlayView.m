@@ -7,6 +7,7 @@
 
 #import "_QQParallaxOverlayView.h"
 #import "QQTabBarController.h"
+#import "YYTabBarController.h"
 
 @implementation _QQParallaxOverlayView
 
@@ -19,7 +20,11 @@
 
 - (UIEdgeInsets)safeAreaInsets {
     UIViewController *currentViewController = [self qq_parallaxCurrentViewController];
-    QQTabBarController *tabBarController = currentViewController.qq_tabBarController;
+    YYTabBarController *customTabBarController = currentViewController.qq_tabBarController;
+    if (customTabBarController) {
+        return customTabBarController.view.safeAreaInsets;
+    }
+    UITabBarController *tabBarController = currentViewController.tabBarController;
     if (tabBarController) {
         return tabBarController.view.safeAreaInsets;
     }

@@ -10,6 +10,21 @@
 #import "NNTabBarController.h"
 #import "SystemTabBarController.h"
 
+@interface MMTabBar : UITabBar
+
+@end
+
+@implementation MMTabBar
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        self.tintColor = UIColor.greenColor;
+    }
+    return self;
+}
+
+@end
+
 @interface TableViewController ()
 
 @property (nonatomic, copy) NSString *itemTitle;
@@ -64,21 +79,17 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:true];
     
+    QQTabBarController *tabBarController = (QQTabBarController *)self.tabBarController;
+    if (!tabBarController) {
+        tabBarController = (QQTabBarController *)self.qq_tabBarController;
+    }
     if (indexPath.row == 0) {
-        if (self.qq_tabBarController.isTabBarHidden) {
-            [self.qq_tabBarController setTabBarHidden:NO animated:YES];
+        if (tabBarController.isTabBarHidden) {
+            [tabBarController setTabBarHidden:NO animated:YES];
         } else {
-            [self.qq_tabBarController setTabBarHidden:YES animated:YES];
+            [tabBarController setTabBarHidden:YES animated:YES];
         }
         
-        // 系统
-        if (@available(iOS 18.0, *)) {
-            if (self.tabBarController.isTabBarHidden) {
-                [self.tabBarController setTabBarHidden:NO animated:YES];
-            } else {
-                [self.tabBarController setTabBarHidden:YES animated:YES];
-            }
-        }
     } else if (indexPath.row == 1) {
         self.navigationController.qq_tabBarItem.layoutCentered = NO;
         if (self.navigationController.qq_tabBarItem.title) {
@@ -96,7 +107,7 @@
             self.navigationController.qq_tabBarItem.title = _itemTitle;
         }
     } else if (indexPath.row == 3) {
-        for (UIViewController *vc in self.qq_tabBarController.viewControllers) {
+        for (UIViewController *vc in tabBarController.viewControllers) {
             UIColor *backgroundColor = vc.qq_tabBarItem.backgroundColor;
             UIColor *selectedBackgroundColor = vc.qq_tabBarItem.selectedBackgroundColor;
             if (backgroundColor == nil) {
@@ -110,22 +121,21 @@
             vc.qq_tabBarItem.selectedBackgroundColor = selectedBackgroundColor;
         }
     } else if (indexPath.row == 4) {
-        self.qq_tabBarController.tabBarHeight += 10;
-        if (self.qq_tabBarController.tabBarHeight >= 100) {
-            self.qq_tabBarController.tabBarHeight = 49;
+        tabBarController.tabBarHeight += 10;
+        if (tabBarController.tabBarHeight >= 100) {
+            tabBarController.tabBarHeight = 49;
         }
     } else if (indexPath.row == 5) {
         TabBarDemoViewController *vc = [[TabBarDemoViewController alloc] init];
         [self.navigationController pushViewController:vc animated:YES];
     } else if (indexPath.row == 6) {
         SystemTabBarController *vc = [[SystemTabBarController alloc] init];
-        vc.qq_hidesBottomBarWhenPushed = YES;
+        vc.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:vc animated:YES];
     } else {
         UIViewController *vc = [[UIViewController alloc] init];
-        vc.qq_hidesBottomBarWhenPushed = YES;
         vc.hidesBottomBarWhenPushed = YES;
-        vc.view.backgroundColor = UIColor.systemBackgroundColor;
+        vc.view.backgroundColor = UIColor.whiteColor;
         [self.navigationController pushViewController:vc animated:YES];
     }
 }

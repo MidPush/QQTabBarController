@@ -9,6 +9,7 @@
 #import "QQTabBar.h"
 #import "TableViewController.h"
 #import "QQTabBarController.h"
+#import "YYTabBarController.h"
 #import "UIImage+Extension.h"
 
 @interface TabBarDemoViewController ()<UITableViewDelegate, UITableViewDataSource, QQTabBarDelegate>
@@ -39,7 +40,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor systemBackgroundColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     [self initSubviews];
 }
 
@@ -136,17 +137,19 @@
 }
 
 - (void)tabBar:(QQTabBar *)tabBar didSelectItem:(QQTabBarItem *)item {
-    if (self.qq_tabBarController.isTabBarHidden) {
-        [self.qq_tabBarController setTabBarHidden:NO animated:YES];
-    } else {
-        [self.qq_tabBarController setTabBarHidden:YES animated:YES];
-    }
-    
-    if (@available(iOS 18.0, *)) {
-        if (self.tabBarController.isTabBarHidden) {
-            [self.tabBarController setTabBarHidden:NO animated:YES];
+    QQTabBarController *tabBarController = (QQTabBarController *)self.tabBarController;
+    if (tabBarController) {
+        if (tabBarController.isTabBarHidden) {
+            [tabBarController setTabBarHidden:NO animated:YES];
         } else {
-            [self.tabBarController setTabBarHidden:YES animated:YES];
+            [tabBarController setTabBarHidden:YES animated:YES];
+        }
+    } else {
+        YYTabBarController *tabBarController = self.qq_tabBarController;
+        if (tabBarController.isTabBarHidden) {
+            [tabBarController setTabBarHidden:NO animated:YES];
+        } else {
+            [tabBarController setTabBarHidden:YES animated:YES];
         }
     }
 }

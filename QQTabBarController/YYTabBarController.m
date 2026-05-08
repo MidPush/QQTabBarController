@@ -1,11 +1,11 @@
 //
-//  QQTabBarController.m
-//  QQTabBarController
+//  YYTabBarController.m
+//  YYTabBarController
 //
-//  Created by apple on 2026/2/6.
+//  Created by apple on 2026/4/24.
 //
 
-#import "QQTabBarController.h"
+#import "YYTabBarController.h"
 #import <objc/runtime.h>
 #import "QQTabBarItem.h"
 #import "UINavigationController+QQPrivate.h"
@@ -13,9 +13,9 @@
 #import "_QQTabBarControllerTransitionContext.h"
 #import "_QQParallaxOverlayView.h"
 
-CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
+CGFloat const YYTabBarControllerHideShowBarDuration = 0.2;
 
-@interface QQTabBarController ()<UINavigationControllerExtensionDelegate>
+@interface YYTabBarController ()<UINavigationControllerExtensionDelegate>
 
 @property (nonatomic, strong) UIView *containerView;
 
@@ -24,7 +24,7 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
 
 @end
 
-@implementation QQTabBarController {
+@implementation YYTabBarController {
     struct {
         unsigned shouldSelectViewController : 1;
         unsigned didSelectViewController : 1;
@@ -46,37 +46,40 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
 
 - (instancetype)init {
     if (self = [super init]) {
-        _tabBarHidden = NO;
-        _tabBarHeight = 49.0;
-        _selectedIndex = NSNotFound;
-        _tabBar = [[QQTabBar alloc] init];
-        [self addObserver:self forKeyPath:@"tabBar" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
+        // 系统 UITabBarController init 之后就会 loadView，这里和系统保持一致
+        [self loadViewIfNeeded];
     }
     return self;
 }
 
-- (void)loadView {
-    [super loadView];
-    self.containerView.frame = self.view.bounds;
-    [self.view addSubview:self.containerView];
-
-    self.tabBar.frame = self.tabBarFrame;
-    [self.view addSubview:self.tabBar];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor systemBackgroundColor];
+    
+    _tabBarHidden = NO;
+    _tabBarHeight = 49.0;
+    _selectedIndex = NSNotFound;
+
+    self.containerView.frame = self.view.bounds;
+    [self.view addSubview:self.containerView];
+    
+    _qq_tabBar = [[QQTabBar alloc] initWithFrame:self.tabBarFrame];
+    _qq_tabBar.delegate = self;
+    [self.view addSubview:self.qq_tabBar];
+    
+    [self addObserver:self forKeyPath:@"qq_tabBar" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
 }
 
 #pragma mark - Observe
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"tabBar"]) {
+    if ([keyPath isEqualToString:@"qq_tabBar"]) {
         QQTabBar *oldTabBar = change[NSKeyValueChangeOldKey];
         [oldTabBar removeFromSuperview];
         
         QQTabBar *newTabBar = change[NSKeyValueChangeNewKey];
-        _tabBar = newTabBar;
+        newTabBar.delegate = self;
+        newTabBar.items = oldTabBar.items;
+        newTabBar.selectedItem = oldTabBar.selectedItem;
+        _qq_tabBar = newTabBar;
         if (newTabBar) {
             [self.view addSubview:newTabBar];
             [self.view setNeedsLayout];
@@ -84,15 +87,15 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
     }
 }
 
-- (void)dealloc { 
-    [self removeObserver:self forKeyPath:@"tabBar"];
+- (void)dealloc {
+    [self removeObserver:self forKeyPath:@"qq_tabBar"];
 }
 
 #pragma mark - Overrides
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    if (!_tabBarIsAnimating && !CGRectEqualToRect(self.tabBar.frame, self.tabBarFrame) && self.tabBar.superview == self.view) {
-        self.tabBar.frame = self.tabBarFrame;
+    if (!_tabBarIsAnimating && !CGRectEqualToRect(self.qq_tabBar.frame, self.tabBarFrame) && self.qq_tabBar.superview == self.view) {
+        self.qq_tabBar.frame = self.tabBarFrame;
     }
 }
 
@@ -120,10 +123,6 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
 }
 
 #pragma mark - UIContentContainer
-- (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
-}
-
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     if (!CGSizeEqualToSize(self.view.bounds.size, size)) {
         [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
@@ -146,7 +145,7 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
 }
 
 #pragma mark - Setter
-- (void)setDelegate:(id<QQTabBarControllerDelegate>)delegate {
+- (void)setDelegate:(id<YYTabBarControllerDelegate>)delegate {
     _delegate = delegate;
     _delegateHas.shouldSelectViewController = [_delegate respondsToSelector:@selector(tabBarController:shouldSelectViewController:)];
     _delegateHas.didSelectViewController = [_delegate respondsToSelector:@selector(tabBarController:didSelectViewController:)];
@@ -166,7 +165,7 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
     }
     
     [self _captureItems];
-    [self.tabBar setItems:_items];
+    [self.qq_tabBar setItems:_items];
     
     if (self.selectedIndex == NSNotFound) {
         self.selectedIndex = 0;
@@ -174,7 +173,7 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
         self.selectedIndex = MIN(MAX(0, self.selectedIndex), _viewControllers.count - 1);
         if (!_selectedViewController) {
             [self _moveToViewControllerAtIndex:self.selectedIndex];
-            _tabBar.selectedItem = _selectedViewController.qq_tabBarItem;
+            _qq_tabBar.selectedItem = _selectedViewController.qq_tabBarItem;
         }
     }
 }
@@ -186,7 +185,7 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
         NSInteger selectedIndex = [self.viewControllers indexOfObject:selectedViewController];
         self.selectedIndex = selectedIndex;
     } else {
-        NSLog(@"-[QQTabBarController setSelectedViewController:] only a view controller in the tab bar controller's list of view controllers can be selected.");
+        NSLog(@"-[YYTabBarController setSelectedViewController:] only a view controller in the tab bar controller's list of view controllers can be selected.");
     }
 }
 
@@ -194,7 +193,7 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
     if (_selectedIndex != selectedIndex) {
         _selectedIndex = selectedIndex;
         [self _moveToViewControllerAtIndex:selectedIndex];
-        _tabBar.selectedItem = _selectedViewController.qq_tabBarItem;
+        _qq_tabBar.selectedItem = _selectedViewController.qq_tabBarItem;
     }
 }
 
@@ -207,14 +206,14 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
         _lastShowHideTabBar = hide;
         return;
     }
-    if (self.tabBar.superview != self.view) return;
+    if (self.qq_tabBar.superview != self.view) return;
     if (_tabBarHidden != hide) {
         _tabBarHidden = hide;
         _lastShowHideTabBar = hide;
         
         if ([_selectedViewController isKindOfClass:[UINavigationController class]]) {
             UIViewController *topViewController = [(UINavigationController *)_selectedViewController topViewController];
-            BOOL canShowTabBar = (topViewController == [self _shouldShowsBottomBarViewController:(UINavigationController *)_selectedViewController] && !topViewController.qq_hidesBottomBarWhenPushed);
+            BOOL canShowTabBar = (topViewController == [self _shouldShowsBottomBarViewController:(UINavigationController *)_selectedViewController] && !topViewController.hidesBottomBarWhenPushed);
             if (!canShowTabBar) {
                 hide = YES;
                 animated = NO;
@@ -226,63 +225,63 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
 
             if (hide) {
                 if (_delegateHas.willHideTabBar) {
-                    [self.delegate tabBarController:self willHideTabBar:self.tabBar];
+                    [self.delegate tabBarController:self willHideTabBar:self.qq_tabBar];
                 }
             } else {
                 if (_delegateHas.willShowTabBar) {
-                    [self.delegate tabBarController:self willShowTabBar:self.tabBar];
+                    [self.delegate tabBarController:self willShowTabBar:self.qq_tabBar];
                 }
             }
             
-            CGAffineTransform startTransform = hide? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0, _tabBar.frame.size.height);
-            CGAffineTransform endTransform = hide? CGAffineTransformMakeTranslation(0, _tabBar.frame.size.height) : CGAffineTransformIdentity;
-            _tabBar.transform = startTransform;
-            _tabBar.hidden = NO;
+            CGAffineTransform startTransform = hide? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0, _qq_tabBar.frame.size.height);
+            CGAffineTransform endTransform = hide? CGAffineTransformMakeTranslation(0, _qq_tabBar.frame.size.height) : CGAffineTransformIdentity;
+            _qq_tabBar.transform = startTransform;
+            _qq_tabBar.hidden = NO;
             
-            [UIView animateWithDuration:QQTabBarControllerHideShowBarDuration animations:^{
-                self.tabBar.transform = endTransform;
+            [UIView animateWithDuration:YYTabBarControllerHideShowBarDuration animations:^{
+                self.qq_tabBar.transform = endTransform;
             } completion:^(BOOL finished) {
-                self.tabBar.transform = CGAffineTransformIdentity;
-                self.tabBar.hidden = hide;
+                self.qq_tabBar.transform = CGAffineTransformIdentity;
+                self.qq_tabBar.hidden = hide;
                 [self _updateAdditionalSafeAreaInsets:NO animated:animated];
                 self->_tabBarIsAnimating = NO;
                 
                 if (hide) {
                     if (self->_delegateHas.didHideTabBar) {
-                        [self.delegate tabBarController:self didHideTabBar:self.tabBar];
+                        [self.delegate tabBarController:self didHideTabBar:self.qq_tabBar];
                     }
                 } else {
                     if (self->_delegateHas.didShowTabBar) {
-                        [self.delegate tabBarController:self didShowTabBar:self.tabBar];
+                        [self.delegate tabBarController:self didShowTabBar:self.qq_tabBar];
                     }
                 }
                 
                 if (self->_lastShowHideTabBar != hide) {
-                    // 动画结束，如果和最后一次设置显隐状态不一致，使其显示正确的状态，主要解决快速设置bug（两次设置时间间隔<0.25s）
+                    // 动画结束，如果和最后一次设置显隐状态不一致，使其显示正确的状态，主要解决快速设置bug（两次设置时间间隔<0.2s）
                     [self setTabBarHidden:self->_lastShowHideTabBar animated:animated];
                 }
             }];
         } else {
             if (hide) {
                 if (_delegateHas.willHideTabBar) {
-                    [self.delegate tabBarController:self willHideTabBar:self.tabBar];
+                    [self.delegate tabBarController:self willHideTabBar:self.qq_tabBar];
                 }
             } else {
                 if (_delegateHas.willShowTabBar) {
-                    [self.delegate tabBarController:self willShowTabBar:self.tabBar];
+                    [self.delegate tabBarController:self willShowTabBar:self.qq_tabBar];
                 }
             }
             
-            _tabBar.hidden = hide;
+            _qq_tabBar.hidden = hide;
             [self _updateAdditionalSafeAreaInsets:NO animated:animated];
             
             if (hide) {
                 if (_delegateHas.didHideTabBar) {
-                    [self.delegate tabBarController:self didHideTabBar:self.tabBar];
+                    [self.delegate tabBarController:self didHideTabBar:self.qq_tabBar];
                 }
             } else {
                 if (_delegateHas.didShowTabBar) {
-                    [self.delegate tabBarController:self didShowTabBar:self.tabBar];
+                    [self.delegate tabBarController:self didShowTabBar:self.qq_tabBar];
                 }
             }
         }
@@ -294,6 +293,24 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
         _tabBarHeight = tabBarHeight;
         [self _updateAdditionalSafeAreaInsets:NO animated:NO];
         [self.view setNeedsLayout];
+    }
+}
+
+#pragma mark - TabBarItem Action
+
+- (void)_tabBarItemClicked:(QQTabBarItem *)tabBarItem {
+    NSInteger index = [self.qq_tabBar.items indexOfObject:tabBarItem];
+    if (_delegateHas.shouldSelectViewController) {
+        BOOL sholudSelect = [self.delegate tabBarController:self shouldSelectViewController:self.viewControllers[index]];
+        if (!sholudSelect) {
+            return;
+        }
+    }
+    
+    self.selectedIndex = index;
+    
+    if (_delegateHas.didSelectViewController) {
+        [self.delegate tabBarController:self didSelectViewController:self.viewControllers[index]];
     }
 }
 
@@ -309,7 +326,8 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
                       operation:(UINavigationControllerOperation)operation {
     // 转场或pop手势返回时禁止用户交互
     self.view.userInteractionEnabled = NO;
-    UIEdgeInsets additionalSafeAreaInsets = UIEdgeInsetsMake(0.0, 0.0, self.tabBarHeight, 0.0);
+    UIEdgeInsets additionalSafeAreaInsets = self.selectedViewController.additionalSafeAreaInsets;
+    additionalSafeAreaInsets.bottom = self.tabBarHeight;
     [UIView performWithoutAnimation:^{
         self.selectedViewController.additionalSafeAreaInsets = additionalSafeAreaInsets;
     }];
@@ -337,21 +355,18 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
                       cancelled:(BOOL)cancelled {
     BOOL shouldShowsTabBar = [self _shouldShowsBottomBar:navigationController from:fromVC to:toVC operation:operation];
     if (operation == UINavigationControllerOperationPush) {
-        if (!shouldShowsTabBar && !self.tabBar.hidden) {
+        if (!shouldShowsTabBar && !self.qq_tabBar.hidden) {
             [self _addParallaxOverlayViewToViewController:fromVC];
         }
     } else {
-        if (shouldShowsTabBar && self.tabBar.hidden) {
+        if (shouldShowsTabBar && self.qq_tabBar.hidden) {
             [self _addParallaxOverlayViewToViewController:toVC];
         }
     }
     _shouldShowsTabBar = shouldShowsTabBar;
     
-    UIEdgeInsets additionalSafeAreaInsets = UIEdgeInsetsZero;
-    if (shouldShowsTabBar) {
-        additionalSafeAreaInsets = UIEdgeInsetsMake(0.0, 0.0, self.tabBarHeight, 0.0);
-    }
-
+    UIEdgeInsets additionalSafeAreaInsets = self.selectedViewController.additionalSafeAreaInsets;
+    additionalSafeAreaInsets.bottom = shouldShowsTabBar ? self.tabBarHeight : 0;
     [UIView performWithoutAnimation:^{
         self.selectedViewController.additionalSafeAreaInsets = additionalSafeAreaInsets;
     }];
@@ -368,9 +383,9 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
         _parallaxOverlayView = nil;
     }
     
-    if (self.tabBar.superview != self.view) {
-        self.tabBar.frame = self.tabBarFrame;
-        [self.view addSubview:self.tabBar];
+    if (self.qq_tabBar.superview != self.view) {
+        self.qq_tabBar.frame = self.tabBarFrame;
+        [self.view addSubview:self.qq_tabBar];
     }
     
     BOOL showsTabBar = _shouldShowsTabBar;
@@ -378,7 +393,7 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
         if (self.isTabBarHidden) {
             showsTabBar = NO;
         } else {
-            if (!fromVC.qq_hidesBottomBarWhenPushed && fromVC == [self _shouldShowsBottomBarViewController:navigationController]) {
+            if (!fromVC.hidesBottomBarWhenPushed && fromVC == [self _shouldShowsBottomBarViewController:navigationController]) {
                 showsTabBar = YES;
             } else {
                 showsTabBar = NO;
@@ -386,7 +401,7 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
         }
     }
     if (!_tabBarIsAnimating) {
-        self.tabBar.hidden = !showsTabBar;
+        self.qq_tabBar.hidden = !showsTabBar;
     }
     [self _updateAdditionalSafeAreaInsets:NO animated:NO];
 }
@@ -401,7 +416,7 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
     NSInteger showsBottomBarIndex = -1;
     for (NSInteger index = 0; index < navigationController.viewControllers.count; index++) {
         UIViewController *viewController = navigationController.viewControllers[index];
-        if (viewController.qq_hidesBottomBarWhenPushed) {
+        if (viewController.hidesBottomBarWhenPushed) {
             showsBottomBarIndex = index - 1;
             break;
         } else {
@@ -415,6 +430,24 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
     return showsBottomBarViewController;
 }
 
+- (UIViewController *)_shouldShowsBottomBarViewControllers:(NSArray *)viewControllers {
+    NSInteger showsBottomBarIndex = -1;
+    for (NSInteger index = 0; index < viewControllers.count; index++) {
+        UIViewController *viewController = viewControllers[index];
+        if (viewController.hidesBottomBarWhenPushed) {
+            showsBottomBarIndex = index - 1;
+            break;
+        } else {
+            showsBottomBarIndex = index;
+        }
+    }
+    UIViewController *showsBottomBarViewController = nil;
+    if (showsBottomBarIndex >= 0) {
+        showsBottomBarViewController = viewControllers[showsBottomBarIndex];
+    }
+    return showsBottomBarViewController;
+}
+
 - (BOOL)_shouldShowsBottomBar:(UINavigationController *)navigationController
                          from:(UIViewController *)fromVC
                            to:(UIViewController *)toVC
@@ -424,17 +457,28 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
     }
     BOOL shouldShowsTabBar = NO;
     if (operation == UINavigationControllerOperationPush) {
-        if (self.tabBar.hidden) {
+        if (self.qq_tabBar.hidden) {
             shouldShowsTabBar = NO;
         } else {
-            if (toVC == [self _shouldShowsBottomBarViewController:navigationController] && !toVC.qq_hidesBottomBarWhenPushed) {
-                shouldShowsTabBar = YES;
+            if (![navigationController.viewControllers containsObject:toVC]) {
+                // 解决pop之后马上push，toVC还未添加到导航控制器中的问题
+                NSMutableArray *viewControllers = [navigationController.viewControllers mutableCopy];
+                [viewControllers addObject:toVC];
+                if (toVC == [self _shouldShowsBottomBarViewControllers:viewControllers] && !toVC.hidesBottomBarWhenPushed) {
+                    shouldShowsTabBar = YES;
+                } else {
+                    shouldShowsTabBar = NO;
+                }
             } else {
-                shouldShowsTabBar = NO;
+                if (toVC == [self _shouldShowsBottomBarViewController:navigationController] && !toVC.hidesBottomBarWhenPushed) {
+                    shouldShowsTabBar = YES;
+                } else {
+                    shouldShowsTabBar = NO;
+                }
             }
         }
     } else {
-        if (!self.tabBar.hidden) {
+        if (!self.qq_tabBar.hidden) {
             shouldShowsTabBar = YES;
         } else {
             if (toVC == [self _shouldShowsBottomBarViewController:navigationController]) {
@@ -456,12 +500,12 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
     [superview addSubview:_parallaxOverlayView];
     [superview bringSubviewToFront:_parallaxOverlayView];
     
-    if (self.tabBar.superview != _parallaxOverlayView) {
+    if (self.qq_tabBar.superview != _parallaxOverlayView) {
         if (!_tabBarIsAnimating) {
-            self.tabBar.frame = self.tabBarFrame;
+            self.qq_tabBar.frame = self.tabBarFrame;
         }
-        self.tabBar.hidden = NO;
-        [_parallaxOverlayView addSubview:self.tabBar];
+        self.qq_tabBar.hidden = NO;
+        [_parallaxOverlayView addSubview:self.qq_tabBar];
     }
 }
 
@@ -481,7 +525,9 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
             break;
         }
     } while ((viewController = viewController.childViewControllers.firstObject));
-    _nestedNavigationController.additionalSafeAreaInsets = UIEdgeInsetsMake(0.0, 0.0, self.tabBarHeight, 0.0);
+    UIEdgeInsets additionalSafeAreaInsets = viewController.additionalSafeAreaInsets;
+    additionalSafeAreaInsets.bottom = self.tabBarHeight;
+    viewController.additionalSafeAreaInsets = additionalSafeAreaInsets;
 }
 
 - (__kindof UIViewController *_Nullable)_visibleViewController {
@@ -490,11 +536,9 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
 
 - (void)_updateAdditionalSafeAreaInsets:(BOOL)shouldLayoutManually animated:(BOOL)animated {
     UIViewController *selectedViewController = self.selectedViewController;
-    UIEdgeInsets additionalSafeAreaInsets = UIEdgeInsetsZero;
-    if (!self.tabBar.hidden) {
-        additionalSafeAreaInsets = UIEdgeInsetsMake(0.0, 0.0, self.tabBarHeight, 0.0);
-    }
-    NSTimeInterval duration = animated ? 0.25 : 0;
+    UIEdgeInsets additionalSafeAreaInsets = selectedViewController.additionalSafeAreaInsets;
+    additionalSafeAreaInsets.bottom = self.qq_tabBar.hidden ? 0 : self.tabBarHeight;
+    NSTimeInterval duration = animated ? 0.2 : 0;
     [UIView animateWithDuration:duration animations:^{
         selectedViewController.additionalSafeAreaInsets = additionalSafeAreaInsets;
     }];
@@ -589,16 +633,14 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.25;
         return;
     }
     [_items replaceObjectAtIndex:index withObject:toItem];
-    [self.tabBar setItems:_items];
+    [self.qq_tabBar setItems:_items];
 }
 
 @end
 
-@implementation UIViewController (QQTabBarControllerItem)
+@implementation UIViewController (YYTabBarControllerItem)
 
 static char *_qqtabBarItemPropertyKey;
-static char *_qqtabBarControllerPropertyKey;
-static char *_qqtabBarControllerCategoryHidesTabBarWhenPushedKey;
 
 - (QQTabBarItem *)qq_tabBarItem {
     QQTabBarItem *item = objc_getAssociatedObject(self, &_qqtabBarItemPropertyKey);
@@ -618,31 +660,20 @@ static char *_qqtabBarControllerCategoryHidesTabBarWhenPushedKey;
     QQTabBarItem *oldItem = self.qq_tabBarItem;
     [self.qq_tabBarController _changeItem:oldItem toItem:tabBarItem];
 
-    objc_setAssociatedObject(self,
-                             &_qqtabBarItemPropertyKey,
-                             tabBarItem,
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &_qqtabBarItemPropertyKey, tabBarItem, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (QQTabBarController *)qq_tabBarController {
-    return [self qq_nearestParentViewControllerThatIsKindOf:[QQTabBarController class]];
+- (YYTabBarController *)qq_tabBarController {
+    return [self qq_nearestParentViewControllerThatIsKindOf:[YYTabBarController class]];
 }
 
-- (BOOL)qq_hidesBottomBarWhenPushed {
-    return [(NSNumber *)objc_getAssociatedObject(self, &_qqtabBarControllerCategoryHidesTabBarWhenPushedKey) boolValue];
-}
-
-- (void)setQq_hidesBottomBarWhenPushed:(BOOL)qq_hidesBottomBarWhenPushed {
-    objc_setAssociatedObject(self, &_qqtabBarControllerCategoryHidesTabBarWhenPushedKey, @(qq_hidesBottomBarWhenPushed), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (QQTabBarController *)qq_nearestParentViewControllerThatIsKindOf:(Class)c {
+- (YYTabBarController *)qq_nearestParentViewControllerThatIsKindOf:(Class)c {
     UIViewController *controller = self.parentViewController;
     while (controller && ![controller isKindOfClass:c]) {
         controller = controller.parentViewController;
     }
     if (controller && [controller isKindOfClass:c]) {
-        return (QQTabBarController *)controller;
+        return (YYTabBarController *)controller;
     }
     return nil;
 }

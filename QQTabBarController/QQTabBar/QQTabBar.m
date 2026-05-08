@@ -8,6 +8,7 @@
 #import "QQTabBar.h"
 #import "QQTabBarItem.h"
 #import "QQTabBarController.h"
+#import "YYTabBarController.h"
 
 @interface QQTabBar ()
 
@@ -19,7 +20,8 @@
 
 @property (nonatomic, strong) UIView *contentView;
 
-@property (nonatomic, weak, readonly, nullable) QQTabBarController *tabBarController;
+@property (nonatomic, weak, readonly, nullable) UITabBarController *tabBarController;
+@property (nonatomic, weak, readonly, nullable) YYTabBarController *customTabBarController;
 
 @end
 
@@ -79,6 +81,19 @@
     return [_buttons copy];
 }
 
+- (void)setDelegate:(id<QQTabBarDelegate>)delegate {
+    if (_delegate != delegate) {
+        if (_delegate) {
+            // 系统 UITabBarController 也是不允许修改的
+            if (self.tabBarController || self.customTabBarController) {
+                NSAssert(NO, @"不允许更改由 tabBarController 管理的 tabBar 的代理");
+                return;
+            }
+        }
+        _delegate = delegate;
+    }
+}
+
 - (void)setItems:(NSArray<QQTabBarItem *> *)items {
     if (![_items isEqualToArray:items]) {
         if (self.selectedItem && ![items containsObject:self.selectedItem]) {
@@ -105,7 +120,7 @@
 }
 
 - (QQTabBarItem *)selectedItem {
-    if (_selectedItemIndex >= 0) {
+    if (_selectedItemIndex >= 0 && _selectedItemIndex < _items.count) {
         return [_items objectAtIndex:_selectedItemIndex];
     }
     return nil;
@@ -123,18 +138,20 @@
 - (void)setBarTintColor:(UIColor *)barTintColor {
     if (_barTintColor != barTintColor) {
         _barTintColor = barTintColor;
-        _backgroundImageView.backgroundColor = barTintColor;
-        if (!_backgroundImage && barTintColor) {
+        _backgroundImageView.image = _backgroundImage;
+        if (_backgroundImage) {
+            if (_backgroundEffectView) {
+                [_backgroundEffectView removeFromSuperview];
+                _backgroundEffectView = nil;
+            }
+            _backgroundImageView.backgroundColor = [UIColor clearColor];
+        } else {
+            _backgroundImageView.backgroundColor = self.barTintColor;
             if (!_backgroundEffectView) {
                 UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleProminent];
                 _backgroundEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
             }
             [_backgroundView insertSubview:_backgroundEffectView atIndex:0];
-        } else {
-            if (_backgroundEffectView) {
-                [_backgroundEffectView removeFromSuperview];
-                _backgroundEffectView = nil;
-            }
         }
         [self setNeedsLayout];
     }
@@ -149,10 +166,16 @@
                 [_backgroundEffectView removeFromSuperview];
                 _backgroundEffectView = nil;
             }
-            [self setNeedsLayout];
+            _backgroundImageView.backgroundColor = [UIColor clearColor];
         } else {
-            self.barTintColor = self.barTintColor;
+            _backgroundImageView.backgroundColor = self.barTintColor;
+            if (!_backgroundEffectView) {
+                UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleProminent];
+                _backgroundEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+            }
+            [_backgroundView insertSubview:_backgroundEffectView atIndex:0];
         }
+        [self setNeedsLayout];
     }
 }
 
@@ -189,37 +212,50 @@
     QQTabBarItem *item = self.items[selectedIndex];
     if (!item.isEnabled) return;
     
-    NSInteger prevSelectedIndex = _selectedItemIndex;
-    [self _setSelectedIndex:selectedIndex];
-    
     if ([self.delegate respondsToSelector:@selector(tabBar:didSelectItem:)]) {
         [self.delegate tabBar:self didSelectItem:item];
     }
     
     if (self.tabBarController) {
-        if ([self.tabBarController.delegate respondsToSelector:@selector(tabBarController:shouldSelectViewController:)]) {
-            BOOL sholudSelect = [self.tabBarController.delegate tabBarController:self.tabBarController shouldSelectViewController:self.tabBarController.viewControllers[selectedIndex]];
-            if (!sholudSelect) {
-                [self _setSelectedIndex:prevSelectedIndex];
-                return;
+        // 系统私有方法 _tabBarItemClicked:
+        SEL sel = NSSelectorFromString(@"_tabBarItemClicked:");
+        if ([self.tabBarController respondsToSelector:sel]) {
+            UITabBarItem *systemItem = self.tabBarController.tabBar.items[selectedIndex];
+            [self.tabBarController performSelector:sel withObject:systemItem afterDelay:0];
+        } else {
+            // 万一某个版本系统私有方法 _tabBarItemClicked: 改了，做一个容错处理
+            SEL customSEL = NSSelectorFromString(@"_qqtabBarItemClicked:");
+            if ([self.tabBarController respondsToSelector:customSEL]) {
+                [self.tabBarController performSelector:customSEL withObject:item afterDelay:0];
+            } else {
+                [self _setSelectedIndex:selectedIndex];
             }
         }
-        self.tabBarController.selectedIndex = selectedIndex;
-        if ([self.tabBarController.delegate respondsToSelector:@selector(tabBarController:didSelectViewController:)]) {
-            [self.tabBarController.delegate tabBarController:self.tabBarController didSelectViewController:self.tabBarController.viewControllers[selectedIndex]];
+    } else if (self.customTabBarController) {
+        SEL sel = NSSelectorFromString(@"_tabBarItemClicked:");
+        if ([self.customTabBarController respondsToSelector:sel]) {
+            [self.customTabBarController performSelector:sel withObject:item afterDelay:0];
+        } else {
+            [self _setSelectedIndex:selectedIndex];
         }
+    } else {
+        [self _setSelectedIndex:selectedIndex];
     }
 }
 
-- (QQTabBarController *)tabBarController {
-    if (self.superview) {
-        UIResponder *responder = self.superview.nextResponder;
-        if ([responder isKindOfClass:[QQTabBarController class]]) {
-            QQTabBarController *tabBarController = (QQTabBarController *)responder;
-            return tabBarController;
-        }
+- (UITabBarController *)tabBarController {
+    if ([self.delegate isKindOfClass:[UITabBarController class]]) {
+        UITabBarController *tabBarController = (UITabBarController *)self.delegate;
+        return tabBarController;
     }
     return nil;
+}
+
+- (YYTabBarController *)customTabBarController {
+    if ([self.delegate isKindOfClass:[YYTabBarController class]]) {
+       return (YYTabBarController *)self.delegate;
+   }
+   return nil;
 }
 
 - (void)_reloadItems {
@@ -245,16 +281,10 @@
 
 - (void)_setSelectedIndex:(NSInteger)selectedIndex {
     if (_selectedItemIndex != selectedIndex) {
-        NSInteger prevSelectedIndex = _selectedItemIndex;
-        NSInteger newSelectedIndex = selectedIndex;
         _selectedItemIndex = selectedIndex;
-        if (prevSelectedIndex >= 0) {
-            QQTabBarButton *prevButton = _buttons[prevSelectedIndex];
-            prevButton.selected = NO;
-        }
-        if (newSelectedIndex >= 0) {
-            QQTabBarButton *nextButton = _buttons[newSelectedIndex];
-            nextButton.selected = YES;
+        for (NSInteger i = 0; i < _buttons.count; i++) {
+            QQTabBarButton *button = _buttons[i];
+            button.selected = (i == selectedIndex);
         }
     }
 }
@@ -284,16 +314,16 @@
     NSInteger itemCount = self.items.count;
     if (itemCount == 0) return;
     if (_buttons.count != itemCount) return;
+
+    CGFloat contentWidth = CGRectGetWidth(self.contentView.frame);
+    if (self.useLayoutSafeAreaInsets) {
+        contentWidth -= (self.safeAreaInsets.left + self.safeAreaInsets.right);
+    }
     
 //    系统间距
 //    CGFloat margin = 2.0;
 //    CGFloat buttonSpace = 4.0;
 //    CGFloat buttonY = 1.0;
-    
-    CGFloat contentWidth = CGRectGetWidth(self.contentView.frame);
-    if (self.useLayoutSafeAreaInsets) {
-        contentWidth -= (self.safeAreaInsets.left + self.safeAreaInsets.right);
-    }
     
     CGFloat margin = 0.0;
     CGFloat buttonSpace = 0.0;

@@ -15,7 +15,9 @@
 
 + (UIImage *)qq_imageWithColor:(UIColor *)color size:(CGSize)size cornerRadius:(CGFloat)cornerRadius {
     color = color ? color : [UIColor clearColor];
-    BOOL opaque = (cornerRadius == 0.0);
+    CGFloat a = 0;
+    [color getRed:0 green:0 blue:0 alpha:&a];
+    BOOL opaque = (cornerRadius == 0.0 && a == 1.0);
     return [self qq_imageWithSize:size opaque:opaque scale:0 actions:^(CGContextRef contextRef) {
         CGContextSetFillColorWithColor(contextRef, color.CGColor);
         if (cornerRadius > 0) {
@@ -40,6 +42,5 @@
     UIGraphicsEndImageContext();
     return imageOut;
 }
-
 
 @end

@@ -11,7 +11,7 @@
 #import "ModalViewController.h"
 #import "UIImage+Extension.h"
 
-@interface NNTabBarController ()<QQTabBarControllerDelegate, QQTabBarDelegate>
+@interface NNTabBarController ()<QQTabBarControllerDelegate, YYTabBarControllerDelegate>
 
 
 @end
@@ -20,16 +20,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor systemBackgroundColor];
+    
+    UITabBarController *a = [[UITabBarController alloc] init];
+    BOOL b = a.isViewLoaded;
+    UITabBar *t = [a valueForKey:@"tabBar"];
+    NSLog(@"");
     
     // 可以通过KVC自定义QQTabBar
     NNTabBar *tabBar = [[NNTabBar alloc] init];
-    [self setValue:tabBar forKey:@"tabBar"];
+    [self setValue:tabBar forKey:@"qq_tabBar"];
     
     self.delegate = self;
-    self.tabBar.delegate = self;
-    self.tabBar.barTintColor = [UIColor whiteColor];
-    self.tabBar.shadowImage = [UIImage qq_imageWithColor:[UIColor.separatorColor colorWithAlphaComponent:0.5] size:CGSizeMake(1, 1)];
+    self.qq_tabBar.barTintColor = [UIColor whiteColor];
+    self.qq_tabBar.shadowImage = [UIImage qq_imageWithColor:[UIColor.lightGrayColor colorWithAlphaComponent:0.5] size:CGSizeMake(1, 1)];
     
     NSMutableArray<UIViewController *> *viewControllers = [NSMutableArray array];
     NSArray *titles = @[@"首页", @"同城", @"发布", @"消息", @"我的"];
@@ -71,7 +74,7 @@
 #pragma mark - QQTabBarControllerDelegate
 - (BOOL)tabBarController:(QQTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     NSInteger index = [tabBarController.viewControllers indexOfObject:viewController];
-    [self springAnimationForView:self.tabBar.tabBarButtons[index].imageView];
+    [self springAnimationForView:self.qq_tabBar.tabBarButtons[index].imageView];
     if (index == 2) {
         return NO;
     }
@@ -100,7 +103,7 @@
     BOOL isBlackTheme = (index == 4);
     NSDictionary *titleTextAttributes = isBlackTheme ? @{NSForegroundColorAttributeName:UIColor.whiteColor} : @{NSForegroundColorAttributeName:UIColor.grayColor};
     UIColor *barTintColor = isBlackTheme ? UIColor.blackColor : UIColor.whiteColor;
-    self.tabBar.barTintColor = barTintColor;
+    self.qq_tabBar.barTintColor = barTintColor;
     for (UIViewController *viewController in self.viewControllers) {
         [viewController.qq_tabBarItem setTitleTextAttributes:titleTextAttributes forState:UIControlStateNormal];
     }

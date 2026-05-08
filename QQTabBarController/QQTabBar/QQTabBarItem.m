@@ -185,8 +185,9 @@ NSString *const QQTabBarItemDidChange = @"QQTabBarItemDidChange";
     if (self == object) return YES;
     if (![object isKindOfClass:[QQTabBarItem class]]) return NO;
     QQTabBarItem *otherItem = (QQTabBarItem *)object;
+    BOOL titleIsEqual = (self.title == otherItem.title || [self.title isEqualToString:otherItem.title]);
     return self.enabled == otherItem.enabled &&
-            [self.title isEqualToString:otherItem.title] &&
+            titleIsEqual &&
             self.image == otherItem.image &&
             self.selectedImage == otherItem.selectedImage &&
             self.badgeColor == otherItem.badgeColor &&

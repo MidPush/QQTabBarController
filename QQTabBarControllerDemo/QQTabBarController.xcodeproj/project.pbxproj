@@ -6,6 +6,33 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		189643EF2FAD8E5D0077DD44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 189643E32FAD8E5D0077DD44 /* Assets.xcassets */; };
+		189643F12FAD8E5D0077DD44 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 189643E62FAD8E5D0077DD44 /* LaunchScreen.storyboard */; };
+		189643F22FAD8E5D0077DD44 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 189643E92FAD8E5D0077DD44 /* Main.storyboard */; };
+		189643F32FAD8E5D0077DD44 /* NNTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643D22FAD8E5D0077DD44 /* NNTabBar.m */; };
+		189643F42FAD8E5D0077DD44 /* NNTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643D42FAD8E5D0077DD44 /* NNTabBarController.m */; };
+		189643F52FAD8E5D0077DD44 /* SystemTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643D62FAD8E5D0077DD44 /* SystemTabBarController.m */; };
+		189643F62FAD8E5D0077DD44 /* ModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643D92FAD8E5D0077DD44 /* ModalViewController.m */; };
+		189643F72FAD8E5D0077DD44 /* TabBarDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643DB2FAD8E5D0077DD44 /* TabBarDemoViewController.m */; };
+		189643F82FAD8E5D0077DD44 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643DD2FAD8E5D0077DD44 /* TableViewController.m */; };
+		189643F92FAD8E5D0077DD44 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643DF2FAD8E5D0077DD44 /* UIImage+Extension.m */; };
+		189643FA2FAD8E5D0077DD44 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643E22FAD8E5D0077DD44 /* AppDelegate.m */; };
+		189643FB2FAD8E5D0077DD44 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643E72FAD8E5D0077DD44 /* main.m */; };
+		189643FC2FAD8E5D0077DD44 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643EB2FAD8E5D0077DD44 /* SceneDelegate.m */; };
+		189643FD2FAD8E5D0077DD44 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643ED2FAD8E5D0077DD44 /* ViewController.m */; };
+		189644152FAD8E6D0077DD44 /* _QQTabBarControllerTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896440A2FAD8E6D0077DD44 /* _QQTabBarControllerTransitionAnimator.m */; };
+		189644162FAD8E6D0077DD44 /* QQTabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 189644032FAD8E6D0077DD44 /* QQTabBarButton.m */; };
+		189644172FAD8E6D0077DD44 /* QQTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 189644012FAD8E6D0077DD44 /* QQTabBar.m */; };
+		189644182FAD8E6D0077DD44 /* _QQTabBarControllerTransitionContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896440C2FAD8E6D0077DD44 /* _QQTabBarControllerTransitionContext.m */; };
+		189644192FAD8E6D0077DD44 /* QQTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189644112FAD8E6D0077DD44 /* QQTabBarController.m */; };
+		1896441A2FAD8E6D0077DD44 /* QQTabBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 189644052FAD8E6D0077DD44 /* QQTabBarItem.m */; };
+		1896441B2FAD8E6D0077DD44 /* YYTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189644132FAD8E6D0077DD44 /* YYTabBarController.m */; };
+		1896441C2FAD8E6D0077DD44 /* UINavigationController+QQPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896440E2FAD8E6D0077DD44 /* UINavigationController+QQPrivate.m */; };
+		1896441D2FAD8E6D0077DD44 /* _QQParallaxOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 189644082FAD8E6D0077DD44 /* _QQParallaxOverlayView.m */; };
+		1896441E2FAD8E6D0077DD44 /* QQBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 189643FF2FAD8E6D0077DD44 /* QQBadgeView.m */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		183577D22F55583200C6419E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,27 +54,54 @@
 		183577B62F55582F00C6419E /* QQTabBarController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QQTabBarController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		183577D12F55583200C6419E /* QQTabBarControllerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QQTabBarControllerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		183577DB2F55583200C6419E /* QQTabBarControllerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QQTabBarControllerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		189643D12FAD8E5D0077DD44 /* NNTabBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NNTabBar.h; sourceTree = "<group>"; };
+		189643D22FAD8E5D0077DD44 /* NNTabBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NNTabBar.m; sourceTree = "<group>"; };
+		189643D32FAD8E5D0077DD44 /* NNTabBarController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NNTabBarController.h; sourceTree = "<group>"; };
+		189643D42FAD8E5D0077DD44 /* NNTabBarController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NNTabBarController.m; sourceTree = "<group>"; };
+		189643D52FAD8E5D0077DD44 /* SystemTabBarController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemTabBarController.h; sourceTree = "<group>"; };
+		189643D62FAD8E5D0077DD44 /* SystemTabBarController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SystemTabBarController.m; sourceTree = "<group>"; };
+		189643D82FAD8E5D0077DD44 /* ModalViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModalViewController.h; sourceTree = "<group>"; };
+		189643D92FAD8E5D0077DD44 /* ModalViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModalViewController.m; sourceTree = "<group>"; };
+		189643DA2FAD8E5D0077DD44 /* TabBarDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabBarDemoViewController.h; sourceTree = "<group>"; };
+		189643DB2FAD8E5D0077DD44 /* TabBarDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TabBarDemoViewController.m; sourceTree = "<group>"; };
+		189643DC2FAD8E5D0077DD44 /* TableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableViewController.h; sourceTree = "<group>"; };
+		189643DD2FAD8E5D0077DD44 /* TableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
+		189643DE2FAD8E5D0077DD44 /* UIImage+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+Extension.h"; sourceTree = "<group>"; };
+		189643DF2FAD8E5D0077DD44 /* UIImage+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Extension.m"; sourceTree = "<group>"; };
+		189643E12FAD8E5D0077DD44 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		189643E22FAD8E5D0077DD44 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		189643E32FAD8E5D0077DD44 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		189643E42FAD8E5D0077DD44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		189643E52FAD8E5D0077DD44 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		189643E72FAD8E5D0077DD44 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		189643E82FAD8E5D0077DD44 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		189643EA2FAD8E5D0077DD44 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		189643EB2FAD8E5D0077DD44 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
+		189643EC2FAD8E5D0077DD44 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		189643ED2FAD8E5D0077DD44 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		189643FE2FAD8E6D0077DD44 /* QQBadgeView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQBadgeView.h; sourceTree = "<group>"; };
+		189643FF2FAD8E6D0077DD44 /* QQBadgeView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QQBadgeView.m; sourceTree = "<group>"; };
+		189644002FAD8E6D0077DD44 /* QQTabBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQTabBar.h; sourceTree = "<group>"; };
+		189644012FAD8E6D0077DD44 /* QQTabBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QQTabBar.m; sourceTree = "<group>"; };
+		189644022FAD8E6D0077DD44 /* QQTabBarButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQTabBarButton.h; sourceTree = "<group>"; };
+		189644032FAD8E6D0077DD44 /* QQTabBarButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QQTabBarButton.m; sourceTree = "<group>"; };
+		189644042FAD8E6D0077DD44 /* QQTabBarItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQTabBarItem.h; sourceTree = "<group>"; };
+		189644052FAD8E6D0077DD44 /* QQTabBarItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QQTabBarItem.m; sourceTree = "<group>"; };
+		189644072FAD8E6D0077DD44 /* _QQParallaxOverlayView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _QQParallaxOverlayView.h; sourceTree = "<group>"; };
+		189644082FAD8E6D0077DD44 /* _QQParallaxOverlayView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _QQParallaxOverlayView.m; sourceTree = "<group>"; };
+		189644092FAD8E6D0077DD44 /* _QQTabBarControllerTransitionAnimator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _QQTabBarControllerTransitionAnimator.h; sourceTree = "<group>"; };
+		1896440A2FAD8E6D0077DD44 /* _QQTabBarControllerTransitionAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _QQTabBarControllerTransitionAnimator.m; sourceTree = "<group>"; };
+		1896440B2FAD8E6D0077DD44 /* _QQTabBarControllerTransitionContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _QQTabBarControllerTransitionContext.h; sourceTree = "<group>"; };
+		1896440C2FAD8E6D0077DD44 /* _QQTabBarControllerTransitionContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _QQTabBarControllerTransitionContext.m; sourceTree = "<group>"; };
+		1896440D2FAD8E6D0077DD44 /* UINavigationController+QQPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+QQPrivate.h"; sourceTree = "<group>"; };
+		1896440E2FAD8E6D0077DD44 /* UINavigationController+QQPrivate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+QQPrivate.m"; sourceTree = "<group>"; };
+		189644102FAD8E6D0077DD44 /* QQTabBarController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQTabBarController.h; sourceTree = "<group>"; };
+		189644112FAD8E6D0077DD44 /* QQTabBarController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QQTabBarController.m; sourceTree = "<group>"; };
+		189644122FAD8E6D0077DD44 /* YYTabBarController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YYTabBarController.h; sourceTree = "<group>"; };
+		189644132FAD8E6D0077DD44 /* YYTabBarController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YYTabBarController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		183577E32F55583200C6419E /* Exceptions for "QQTabBarController" folder in "QQTabBarController" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 183577B52F55582F00C6419E /* QQTabBarController */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		183577B82F55582F00C6419E /* QQTabBarController */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				183577E32F55583200C6419E /* Exceptions for "QQTabBarController" folder in "QQTabBarController" target */,
-			);
-			path = QQTabBarController;
-			sourceTree = "<group>";
-		};
 		183577D42F55583200C6419E /* QQTabBarControllerTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = QQTabBarControllerTests;
@@ -88,7 +142,7 @@
 		183577AD2F55582F00C6419E = {
 			isa = PBXGroup;
 			children = (
-				183577B82F55582F00C6419E /* QQTabBarController */,
+				189643EE2FAD8E5D0077DD44 /* QQTabBarController */,
 				183577D42F55583200C6419E /* QQTabBarControllerTests */,
 				183577DE2F55583200C6419E /* QQTabBarControllerUITests */,
 				183577B72F55582F00C6419E /* Products */,
@@ -105,6 +159,99 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		189643D72FAD8E5D0077DD44 /* MainVC */ = {
+			isa = PBXGroup;
+			children = (
+				189643D12FAD8E5D0077DD44 /* NNTabBar.h */,
+				189643D22FAD8E5D0077DD44 /* NNTabBar.m */,
+				189643D32FAD8E5D0077DD44 /* NNTabBarController.h */,
+				189643D42FAD8E5D0077DD44 /* NNTabBarController.m */,
+				189643D52FAD8E5D0077DD44 /* SystemTabBarController.h */,
+				189643D62FAD8E5D0077DD44 /* SystemTabBarController.m */,
+			);
+			path = MainVC;
+			sourceTree = "<group>";
+		};
+		189643E02FAD8E5D0077DD44 /* ObjcExample */ = {
+			isa = PBXGroup;
+			children = (
+				189643D72FAD8E5D0077DD44 /* MainVC */,
+				189643D82FAD8E5D0077DD44 /* ModalViewController.h */,
+				189643D92FAD8E5D0077DD44 /* ModalViewController.m */,
+				189643DA2FAD8E5D0077DD44 /* TabBarDemoViewController.h */,
+				189643DB2FAD8E5D0077DD44 /* TabBarDemoViewController.m */,
+				189643DC2FAD8E5D0077DD44 /* TableViewController.h */,
+				189643DD2FAD8E5D0077DD44 /* TableViewController.m */,
+				189643DE2FAD8E5D0077DD44 /* UIImage+Extension.h */,
+				189643DF2FAD8E5D0077DD44 /* UIImage+Extension.m */,
+			);
+			path = ObjcExample;
+			sourceTree = "<group>";
+		};
+		189643EE2FAD8E5D0077DD44 /* QQTabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				189643E02FAD8E5D0077DD44 /* ObjcExample */,
+				189643E12FAD8E5D0077DD44 /* AppDelegate.h */,
+				189643E22FAD8E5D0077DD44 /* AppDelegate.m */,
+				189643E32FAD8E5D0077DD44 /* Assets.xcassets */,
+				189643E42FAD8E5D0077DD44 /* Info.plist */,
+				189643E62FAD8E5D0077DD44 /* LaunchScreen.storyboard */,
+				189643E72FAD8E5D0077DD44 /* main.m */,
+				189643E92FAD8E5D0077DD44 /* Main.storyboard */,
+				189643EA2FAD8E5D0077DD44 /* SceneDelegate.h */,
+				189643EB2FAD8E5D0077DD44 /* SceneDelegate.m */,
+				189643EC2FAD8E5D0077DD44 /* ViewController.h */,
+				189643ED2FAD8E5D0077DD44 /* ViewController.m */,
+				189644142FAD8E6D0077DD44 /* QQTabBarController */,
+			);
+			path = QQTabBarController;
+			sourceTree = "<group>";
+		};
+		189644062FAD8E6D0077DD44 /* QQTabBar */ = {
+			isa = PBXGroup;
+			children = (
+				189643FE2FAD8E6D0077DD44 /* QQBadgeView.h */,
+				189643FF2FAD8E6D0077DD44 /* QQBadgeView.m */,
+				189644002FAD8E6D0077DD44 /* QQTabBar.h */,
+				189644012FAD8E6D0077DD44 /* QQTabBar.m */,
+				189644022FAD8E6D0077DD44 /* QQTabBarButton.h */,
+				189644032FAD8E6D0077DD44 /* QQTabBarButton.m */,
+				189644042FAD8E6D0077DD44 /* QQTabBarItem.h */,
+				189644052FAD8E6D0077DD44 /* QQTabBarItem.m */,
+			);
+			path = QQTabBar;
+			sourceTree = "<group>";
+		};
+		1896440F2FAD8E6D0077DD44 /* QQTabBarPrivate */ = {
+			isa = PBXGroup;
+			children = (
+				189644072FAD8E6D0077DD44 /* _QQParallaxOverlayView.h */,
+				189644082FAD8E6D0077DD44 /* _QQParallaxOverlayView.m */,
+				189644092FAD8E6D0077DD44 /* _QQTabBarControllerTransitionAnimator.h */,
+				1896440A2FAD8E6D0077DD44 /* _QQTabBarControllerTransitionAnimator.m */,
+				1896440B2FAD8E6D0077DD44 /* _QQTabBarControllerTransitionContext.h */,
+				1896440C2FAD8E6D0077DD44 /* _QQTabBarControllerTransitionContext.m */,
+				1896440D2FAD8E6D0077DD44 /* UINavigationController+QQPrivate.h */,
+				1896440E2FAD8E6D0077DD44 /* UINavigationController+QQPrivate.m */,
+			);
+			path = QQTabBarPrivate;
+			sourceTree = "<group>";
+		};
+		189644142FAD8E6D0077DD44 /* QQTabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				189644062FAD8E6D0077DD44 /* QQTabBar */,
+				1896440F2FAD8E6D0077DD44 /* QQTabBarPrivate */,
+				189644102FAD8E6D0077DD44 /* QQTabBarController.h */,
+				189644112FAD8E6D0077DD44 /* QQTabBarController.m */,
+				189644122FAD8E6D0077DD44 /* YYTabBarController.h */,
+				189644132FAD8E6D0077DD44 /* YYTabBarController.m */,
+			);
+			name = QQTabBarController;
+			path = ../QQTabBarController;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -119,9 +266,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				183577B82F55582F00C6419E /* QQTabBarController */,
 			);
 			name = QQTabBarController;
 			packageProductDependencies = (
@@ -224,6 +368,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				189643EF2FAD8E5D0077DD44 /* Assets.xcassets in Resources */,
+				189643F12FAD8E5D0077DD44 /* LaunchScreen.storyboard in Resources */,
+				189643F22FAD8E5D0077DD44 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,6 +395,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				189643F32FAD8E5D0077DD44 /* NNTabBar.m in Sources */,
+				189643F42FAD8E5D0077DD44 /* NNTabBarController.m in Sources */,
+				189643F52FAD8E5D0077DD44 /* SystemTabBarController.m in Sources */,
+				189643F62FAD8E5D0077DD44 /* ModalViewController.m in Sources */,
+				189644152FAD8E6D0077DD44 /* _QQTabBarControllerTransitionAnimator.m in Sources */,
+				189644162FAD8E6D0077DD44 /* QQTabBarButton.m in Sources */,
+				189644172FAD8E6D0077DD44 /* QQTabBar.m in Sources */,
+				189644182FAD8E6D0077DD44 /* _QQTabBarControllerTransitionContext.m in Sources */,
+				189644192FAD8E6D0077DD44 /* QQTabBarController.m in Sources */,
+				1896441A2FAD8E6D0077DD44 /* QQTabBarItem.m in Sources */,
+				1896441B2FAD8E6D0077DD44 /* YYTabBarController.m in Sources */,
+				1896441C2FAD8E6D0077DD44 /* UINavigationController+QQPrivate.m in Sources */,
+				1896441D2FAD8E6D0077DD44 /* _QQParallaxOverlayView.m in Sources */,
+				1896441E2FAD8E6D0077DD44 /* QQBadgeView.m in Sources */,
+				189643F72FAD8E5D0077DD44 /* TabBarDemoViewController.m in Sources */,
+				189643F82FAD8E5D0077DD44 /* TableViewController.m in Sources */,
+				189643F92FAD8E5D0077DD44 /* UIImage+Extension.m in Sources */,
+				189643FA2FAD8E5D0077DD44 /* AppDelegate.m in Sources */,
+				189643FB2FAD8E5D0077DD44 /* main.m in Sources */,
+				189643FC2FAD8E5D0077DD44 /* SceneDelegate.m in Sources */,
+				189643FD2FAD8E5D0077DD44 /* ViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,6 +448,25 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		189643E62FAD8E5D0077DD44 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				189643E52FAD8E5D0077DD44 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		189643E92FAD8E5D0077DD44 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				189643E82FAD8E5D0077DD44 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		183577E52F55583200C6419E /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -288,7 +475,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VB7MJDUYUF;
+				DEVELOPMENT_TEAM = RD2W4T2592;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = QQTabBarController/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -302,7 +489,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.xuze.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jhfc.jhfc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -317,7 +504,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VB7MJDUYUF;
+				DEVELOPMENT_TEAM = RD2W4T2592;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = QQTabBarController/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -331,7 +518,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.xuze.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jhfc.jhfc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;

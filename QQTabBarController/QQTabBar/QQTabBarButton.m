@@ -61,8 +61,10 @@
 }
 
 - (void)setSelected:(BOOL)selected {
-    [super setSelected:selected];
-    [self _updateTabBarButton];
+    if (self.selected != selected) {
+        [super setSelected:selected];
+        [self _updateTabBarButton];
+    }
 }
 
 - (void)_updateTabBarButton {
