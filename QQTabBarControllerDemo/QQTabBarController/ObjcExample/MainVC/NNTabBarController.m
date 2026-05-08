@@ -21,6 +21,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // 设置代理
+    self.delegate = self;
+    
     // 可以通过KVC自定义QQTabBar
     NNTabBar *tabBar = [[NNTabBar alloc] init];
     [self setValue:tabBar forKey:@"qq_tabBar"];
@@ -77,13 +80,6 @@
 
 - (void)tabBarController:(QQTabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     // 选择了 viewController
-}
-
-- (nullable id <UIViewControllerAnimatedTransitioning>)tabBarController:(QQTabBarController *)tabBarController
-                     animationControllerForTransitionFromViewController:(UIViewController *)fromVC
-                                                       toViewController:(UIViewController *)toVC {
-    // 这里可以自定义转场动画
-    return nil;
 }
 
 #pragma mark - QQTabBarDelegate
