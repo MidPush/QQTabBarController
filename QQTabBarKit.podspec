@@ -2,10 +2,10 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "QQTabBarKit"
-  spec.version      = "1.0.0"
+  spec.version      = "1.0.1"
   spec.summary      = "QQTabBarController."
   spec.homepage     = "https://github.com/MidPush/QQTabBarController"
-  spec.license      = { :type => "MIT", :file => "LICENSE" }
+  spec.license      = { :type => "MIT" }
   spec.author       = { "xz" => "497569855@qq.com" }
   spec.platform     = :ios, "13.0"
   spec.source       = { :git => "https://github.com/MidPush/QQTabBarController.git", :tag => spec.version }

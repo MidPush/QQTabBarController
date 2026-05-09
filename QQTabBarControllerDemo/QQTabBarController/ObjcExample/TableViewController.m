@@ -79,6 +79,14 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:true];
     
+    
+    if ([self.tabBarController isKindOfClass:[SystemTabBarController class]]) {
+        if (indexPath.row == 1 || indexPath.row == 2 || indexPath.row == 3 || indexPath.row == 4) {
+            NSLog(@"系统TabBarController不支持");
+            return;
+        }
+    }
+    
     QQTabBarController *tabBarController = (QQTabBarController *)self.tabBarController;
     if (!tabBarController) {
         tabBarController = (QQTabBarController *)self.qq_tabBarController;
@@ -127,6 +135,7 @@
         }
     } else if (indexPath.row == 5) {
         TabBarDemoViewController *vc = [[TabBarDemoViewController alloc] init];
+//        vc.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:vc animated:YES];
     } else if (indexPath.row == 6) {
         SystemTabBarController *vc = [[SystemTabBarController alloc] init];

@@ -46,7 +46,11 @@ NS_ASSUME_NONNULL_BEGIN
 // 代理
 @property (nonatomic, weak, nullable) id<YYTabBarControllerDelegate> delegate;
 
-// 设置QQTabBar显示或隐藏
+/**
+ 设置QQTabBar显示或隐藏
+ 如果设置了 hidesBottomBarWhenPushed，则 hidesBottomBarWhenPushed 优先级更高
+ 系统的 tabBarHidden 和 hidesBottomBarWhenPushed 也是乱七八糟，不知道什么原理
+ */
 @property (nonatomic, assign, getter=isTabBarHidden) BOOL tabBarHidden;
 - (void)setTabBarHidden:(BOOL)hidden animated:(BOOL)animated;
 
