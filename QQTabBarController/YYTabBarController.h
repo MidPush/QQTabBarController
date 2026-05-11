@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
  优点：更加灵活，能实现更多自定义内容
  
  不支持 moreNavigationController，系统 UITabBarController 超过5个子控制器会显示 moreNavigationController
+ 如果超过5个子控制器，但不想显示 moreNavigationController，可以使用 YYTabBarController
  */
 
 @class YYTabBarController;

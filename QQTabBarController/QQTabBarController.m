@@ -133,15 +133,9 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.2;
         if (self.qq_tabBar.hidden == hidden) {
             return;
         }
-        
-        UIViewController *topViewController = nil;
-        if ([self.selectedViewController isKindOfClass:[UINavigationController class]]) {
-            UINavigationController *navigationController = (UINavigationController *)self.selectedViewController;
-            topViewController = navigationController.topViewController;
-        } else if ([self.selectedViewController isKindOfClass:[UIViewController class]]) {
-            topViewController = self.selectedViewController;
-        }
-        if (topViewController && topViewController.hidesBottomBarWhenPushed) {
+
+        BOOL canShowsBottomBar = [self _checkHidesBottomBarWhenPushed];
+        if (!canShowsBottomBar) {
             // 让 hidesBottomBarWhenPushed 优先级更高
             return;
         }
@@ -453,26 +447,34 @@ CGFloat const QQTabBarControllerHideShowBarDuration = 0.2;
     if (self.isTabBarHidden) {
         showsTabBar = NO;
     } else {
-        UIViewController *selectedViewController = self.selectedViewController;
-        if ([selectedViewController isKindOfClass:[UINavigationController class]]) {
-            UINavigationController *navigationController = (UINavigationController *)selectedViewController;
-            NSInteger currentIndex = [navigationController.viewControllers indexOfObject:navigationController.topViewController];
-            NSInteger showsBottomBarIndex = -1;
-            for (NSInteger index = 0; index < navigationController.viewControllers.count; index++) {
-                UIViewController *viewController = navigationController.viewControllers[index];
-                if (viewController.hidesBottomBarWhenPushed) {
-                    showsBottomBarIndex = index - 1;
-                    break;
-                } else {
-                    showsBottomBarIndex = index;
-                }
-            }
-            if (currentIndex <= showsBottomBarIndex) {
-                showsTabBar = YES;
+        showsTabBar = [self _checkHidesBottomBarWhenPushed];
+    }
+    return showsTabBar;
+}
+
+- (BOOL)_checkHidesBottomBarWhenPushed {
+    BOOL showsTabBar = YES;
+    UIViewController *selectedViewController = self.selectedViewController;
+    if ([selectedViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *navigationController = (UINavigationController *)selectedViewController;
+        NSInteger currentIndex = [navigationController.viewControllers indexOfObject:navigationController.topViewController];
+        NSInteger showsBottomBarIndex = -1;
+        for (NSInteger index = 0; index < navigationController.viewControllers.count; index++) {
+            UIViewController *viewController = navigationController.viewControllers[index];
+            if (viewController.hidesBottomBarWhenPushed) {
+                showsBottomBarIndex = index - 1;
+                break;
             } else {
-                showsTabBar = NO;
+                showsBottomBarIndex = index;
             }
         }
+        if (currentIndex <= showsBottomBarIndex) {
+            showsTabBar = YES;
+        } else {
+            showsTabBar = NO;
+        }
+    } else if ([selectedViewController isKindOfClass:[UIViewController class]]) {
+        showsTabBar = !selectedViewController.hidesBottomBarWhenPushed;
     }
     return showsTabBar;
 }

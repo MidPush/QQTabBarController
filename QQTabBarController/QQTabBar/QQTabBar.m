@@ -216,17 +216,19 @@
         [self.delegate tabBar:self didSelectItem:item];
     }
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     if (self.tabBarController) {
         // 系统私有方法 _tabBarItemClicked:
         SEL sel = NSSelectorFromString(@"_tabBarItemClicked:");
         if ([self.tabBarController respondsToSelector:sel]) {
             UITabBarItem *systemItem = self.tabBarController.tabBar.items[selectedIndex];
-            [self.tabBarController performSelector:sel withObject:systemItem afterDelay:0];
+            [self.tabBarController performSelector:sel withObject:systemItem];
         } else {
             // 万一某个版本系统私有方法 _tabBarItemClicked: 改了，做一个容错处理
             SEL customSEL = NSSelectorFromString(@"_qqtabBarItemClicked:");
             if ([self.tabBarController respondsToSelector:customSEL]) {
-                [self.tabBarController performSelector:customSEL withObject:item afterDelay:0];
+                [self.tabBarController performSelector:customSEL withObject:item];
             } else {
                 [self _setSelectedIndex:selectedIndex];
             }
@@ -234,13 +236,15 @@
     } else if (self.customTabBarController) {
         SEL sel = NSSelectorFromString(@"_tabBarItemClicked:");
         if ([self.customTabBarController respondsToSelector:sel]) {
-            [self.customTabBarController performSelector:sel withObject:item afterDelay:0];
+            [self.customTabBarController performSelector:sel withObject:item];
         } else {
             [self _setSelectedIndex:selectedIndex];
         }
     } else {
         [self _setSelectedIndex:selectedIndex];
     }
+#pragma clang diagnostic pop
+    
 }
 
 - (UITabBarController *)tabBarController {
