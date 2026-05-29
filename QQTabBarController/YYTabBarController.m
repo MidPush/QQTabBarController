@@ -125,7 +125,9 @@ CGFloat const YYTabBarControllerHideShowBarDuration = 0.2;
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     if (!CGSizeEqualToSize(self.view.bounds.size, size)) {
         [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-            [self _updateAdditionalSafeAreaInsets:YES animated:NO];
+            [self _updateAdditionalSafeAreaInsetsWithAnimated:NO];
+            [self.selectedViewController.view setNeedsLayout];
+            [self.selectedViewController.view layoutIfNeeded];
         } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
             
         }];
@@ -181,9 +183,10 @@ CGFloat const YYTabBarControllerHideShowBarDuration = 0.2;
     if (!selectedViewController) return;
     if ([self.viewControllers containsObject:selectedViewController]) {
         if (_selectedViewController != selectedViewController) {
-            _selectedViewController = selectedViewController;
             NSInteger selectedIndex = [self.viewControllers indexOfObject:selectedViewController];
-            self.selectedIndex = selectedIndex;
+            _selectedIndex = selectedIndex;
+            [self _moveToViewControllerAtIndex:selectedIndex];
+            _qq_tabBar.selectedItem = _selectedViewController.qq_tabBarItem;
         }
     } else {
         NSLog(@"-[YYTabBarController setSelectedViewController:] only a view controller in the tab bar controller's list of view controllers can be selected.");
@@ -246,7 +249,7 @@ CGFloat const YYTabBarControllerHideShowBarDuration = 0.2;
             } completion:^(BOOL finished) {
                 self.qq_tabBar.transform = CGAffineTransformIdentity;
                 self.qq_tabBar.hidden = hidden;
-                [self _updateAdditionalSafeAreaInsets:NO animated:animated];
+                [self _updateAdditionalSafeAreaInsetsWithAnimated:animated];
                 self->_tabBarIsAnimating = NO;
                 
                 if (hidden) {
@@ -276,7 +279,7 @@ CGFloat const YYTabBarControllerHideShowBarDuration = 0.2;
             }
             
             _qq_tabBar.hidden = hidden;
-            [self _updateAdditionalSafeAreaInsets:NO animated:animated];
+            [self _updateAdditionalSafeAreaInsetsWithAnimated:animated];
             
             if (hidden) {
                 if (_delegateHas.didHideTabBar) {
@@ -294,7 +297,7 @@ CGFloat const YYTabBarControllerHideShowBarDuration = 0.2;
 - (void)setTabBarHeight:(CGFloat)tabBarHeight {
     if (_tabBarHeight != tabBarHeight) {
         _tabBarHeight = tabBarHeight;
-        [self _updateAdditionalSafeAreaInsets:NO animated:NO];
+        [self _updateAdditionalSafeAreaInsetsWithAnimated:NO];
         [self.view setNeedsLayout];
     }
 }
@@ -441,7 +444,7 @@ CGFloat const YYTabBarControllerHideShowBarDuration = 0.2;
     if (!_tabBarIsAnimating) {
         self.qq_tabBar.hidden = !showsTabBar;
     }
-    [self _updateAdditionalSafeAreaInsets:NO animated:NO];
+    [self _updateAdditionalSafeAreaInsetsWithAnimated:NO];
 }
 
 - (void)_addParallaxOverlayViewToViewController:(UIViewController *)viewController {
@@ -487,17 +490,16 @@ CGFloat const YYTabBarControllerHideShowBarDuration = 0.2;
     return self.selectedViewController;
 }
 
-- (void)_updateAdditionalSafeAreaInsets:(BOOL)shouldLayoutManually animated:(BOOL)animated {
+- (void)_updateAdditionalSafeAreaInsetsWithAnimated:(BOOL)animated {
     UIViewController *selectedViewController = self.selectedViewController;
     UIEdgeInsets additionalSafeAreaInsets = selectedViewController.additionalSafeAreaInsets;
     additionalSafeAreaInsets.bottom = self.qq_tabBar.hidden ? 0 : self.tabBarHeight;
-    NSTimeInterval duration = animated ? 0.2 : 0;
-    [UIView animateWithDuration:duration animations:^{
+    if (animated) {
+        [UIView animateWithDuration:0.2 animations:^{
+            selectedViewController.additionalSafeAreaInsets = additionalSafeAreaInsets;
+        }];
+    } else {
         selectedViewController.additionalSafeAreaInsets = additionalSafeAreaInsets;
-    }];
-    if (shouldLayoutManually) {
-        [selectedViewController.view setNeedsLayout];
-        [selectedViewController.view layoutIfNeeded];
     }
 }
 
@@ -531,7 +533,9 @@ CGFloat const YYTabBarControllerHideShowBarDuration = 0.2;
         return;
     }
     __weak typeof(self) weakSelf = self;
-    [self _cycleFromSourceViewController:sourceViewController toDestinationViewController:nil completionBlock:^{
+    [self _cycleFromSourceViewController:sourceViewController
+             toDestinationViewController:nil
+                         completionBlock:^{
         if (weakSelf == nil) return;
         typeof(self) strongSelf = weakSelf;
         strongSelf->_selectedViewController = nil;

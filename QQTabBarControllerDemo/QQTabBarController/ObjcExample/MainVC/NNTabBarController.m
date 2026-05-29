@@ -32,9 +32,18 @@
     self.qq_tabBar.shadowImage = [UIImage qq_imageWithColor:[UIColor.lightGrayColor colorWithAlphaComponent:0.5] size:CGSizeMake(1, 1)];
     
     NSMutableArray<UIViewController *> *viewControllers = [NSMutableArray array];
-    NSArray *titles = @[@"首页", @"同城", @"发布", @"消息", @"我的"];
-    NSArray *images = @[@"home_normal", @"fishpond_normal", @"post_highlight", @"message_normal" ,@"account_normal"];
-    NSArray *selectedImages = @[@"home_highlight", @"fishpond_highlight", @"post_highlight", @"message_highlight", @"account_highlight"];
+    NSMutableArray *titles = @[@"首页", @"同城", @"发布", @"消息", @"我的"].mutableCopy;
+    NSMutableArray *images = @[@"home_normal", @"fishpond_normal", @"post_highlight", @"message_normal" ,@"account_normal"].mutableCopy;
+    NSMutableArray *selectedImages = @[@"home_highlight", @"fishpond_highlight", @"post_highlight", @"message_highlight", @"account_highlight"].mutableCopy;
+    
+    // 测试超过5个子控制器显示 moreNavigationController，继承自 QQTabBarController 才会显示
+    BOOL testMoreNav = NO;
+    if (testMoreNav) {
+        [titles addObject:@"测试"];
+        [images addObject:@"account_normal"];
+        [selectedImages addObject:@"account_highlight"];
+    }
+
     for (NSInteger i = 0; i < titles.count; i++) {
         TableViewController *vc = [[TableViewController alloc] init];
         vc.title = titles[i];
@@ -71,7 +80,9 @@
 #pragma mark - QQTabBarControllerDelegate
 - (BOOL)tabBarController:(QQTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     NSInteger index = [tabBarController.viewControllers indexOfObject:viewController];
-    [self springAnimationForView:self.qq_tabBar.tabBarButtons[index].imageView];
+    if (index != NSNotFound) {
+        [self springAnimationForView:self.qq_tabBar.tabBarButtons[index].imageView];
+    }
     if (index == 2) {
         return NO;
     }
